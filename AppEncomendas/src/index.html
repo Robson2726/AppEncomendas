@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>Controle de Encomendas</title>
+    <link rel="stylesheet" href="styles.css"> <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+    <div id="login-screen" class="login-container">
+        <div class="login-left">
+            <h1>Olá, bem vindo!</h1>
+            <p>Faça login para acessar o sistema.</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Nome de Usuário:</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                <div id="login-error-message" class="status-message status-error" style="display: none;"></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Entrar</button>
+                </div>
+            </form>
+        </div>
+        <div class="login-right">
+            <img src="./assets/minha-imagem.svg" alt="Ilustração Login" id="login-image">
+        </div>
+    </div>
+    <div id="app-container" class="app-container hidden">
+        <div class="sidebar">
+             <h2>Menu</h2>
+            <ul>
+                <li id="menu-encomendas"><span class="material-symbols-outlined">package_2</span>Encomendas</li>
+                <li id="menu-moradores"><span class="material-symbols-outlined">group</span>Moradores</li>
+                <li id="menu-usuarios" style="display: none;"><span class="material-symbols-outlined">manage_accounts</span>Usuários</li>
+                <li id="menu-relatorios"><span class="material-symbols-outlined">analytics</span>Relatórios</li>
+                <li id="menu-ajustes"><span class="material-symbols-outlined">settings</span>Ajustes</li>
+            </ul>
+            <div class="sidebar-footer">
+                 <span id="logged-user-info">Usuário: -</span>
+                 <button id="logout-button" class="btn-logout">Sair</button>
+            </div>
+        </div>
+        <div class="main-content">
+            </div>
+    </div>
+    <div id="modal-cadastro-encomenda" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-encomenda-title">Cadastrar nova encomenda</h2>
+            <form id="form-cadastro-encomenda">
+                 <input type="hidden" id="encomenda-id" name="encomendaId">
+                 <div class="form-group"><label for="morador">Morador:</label><input type="text" id="morador" name="morador" required autocomplete="off" placeholder="Digite para buscar..."><div id="morador-suggestions" class="suggestions-list visible"></div></div>
+                 <div class="form-group form-row"><div class="form-subgroup"><label for="quantidade">Quantidade:</label><input type="number" id="quantidade" name="quantidade" required value="1" min="1"></div><div class="form-subgroup"><label for="data">Data Recebimento:</label><input type="date" id="data" name="data" required></div><div class="form-subgroup"><label for="hora">Hora Recebimento:</label><input type="time" id="hora" name="hora" required></div></div>
+                 <div class="form-group"><label for="porteiro">Porteiro que Recebeu:</label><input type="text" id="porteiro" name="porteiro" required autocomplete="off" placeholder="Digite para buscar..."><div id="porteiro-suggestions" class="suggestions-list"></div></div>
+                 <div class="form-group"><label for="observacoes">Observações:</label><textarea id="observacoes" name="observacoes" rows="3"></textarea></div>
+                 <div class="form-actions"><button type="button" id="btn-cancelar-encomenda-modal" class="btn-secondary">Cancelar</button><button type="submit" id="btn-salvar-encomenda" class="btn-primary">Salvar Encomenda</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-cadastro-morador" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-morador-title">Cadastrar novo morador</h2>
+            <form id="form-cadastro-morador">
+                <input type="hidden" id="morador-id" name="moradorId">
+                <div class="form-group"><label for="morador-nome">Nome completo:</label><input type="text" id="morador-nome" name="nome" required></div>
+                <div class="form-group"><label for="morador-telefone">Telefone:</label><input type="tel" id="morador-telefone" name="telefone" placeholder="(Opcional)"></div>
+                <div class="form-group"><label for="morador-rua">Rua:</label><input type="text" id="morador-rua" name="rua" required></div>
+                <div class="form-group form-row"><div class="form-subgroup"><label for="morador-numero">Número:</label><input type="text" id="morador-numero" name="numero" required></div><div class="form-subgroup"><label for="morador-bloco">BL/QD:</label><input type="text" id="morador-bloco" name="bloco"></div><div class="form-subgroup"><label for="morador-apartamento">AP/LT:</label><input type="text" id="morador-apartamento" name="apartamento" required></div></div>
+                <div class="form-group"><label for="morador-observacoes">Observações:</label><textarea id="morador-observacoes" name="observacoes" rows="3"></textarea></div>
+                <div class="form-actions"><button type="button" id="btn-cancelar-morador-modal" class="btn-secondary">Cancelar</button><button type="submit" id="btn-salvar-morador" class="btn-primary">Salvar Morador</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-cadastro-usuario" class="modal-overlay"> <div class="modal-content">
+            <h2 id="modal-usuario-title">Cadastrar novo Usuário</h2> <form id="form-cadastro-usuario"> <input type="hidden" id="usuario-id" name="usuarioId">
+
+                <div class="form-group">
+                    <label for="usuario-nome">Nome:</label>
+                    <input type="text" id="usuario-nome" name="nome" required autocomplete="username">
+                     <small>Usado para entrar no sistema e como nome exibido.</small>
+                </div>
+                <div class="form-group">
+                    <label for="usuario-email">Email:</label>
+                    <input type="email" id="usuario-email" name="email" placeholder="(Opcional)">
+                </div>
+                 <div class="form-group" id="grupo-nivel-acesso" style="display: none;"> <label for="usuario-nivel-acesso">Nível de Acesso:</label>
+                    <select id="usuario-nivel-acesso" name="nivelAcesso">
+                        <option value="porteiro">Porteiro</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                 </div>
+                 <div class="form-group" id="grupo-status" style="display: none;"> <label for="usuario-status">Status:</label>
+                    <select id="usuario-status" name="usuario-status">
+                      <option value="Ativo" selected>Ativo</option>
+                      <option value="Inativo">Inativo</option>
+                      </select>
+                  </div>
+                 <div class="form-group">
+                    <label for="usuario-senha">Senha:</label>
+                    <input type="password" id="usuario-senha" name="senha" required autocomplete="new-password">
+                    <small>Mínimo 6 caracteres. Deixe em branco na edição para não alterar.</small>
+                </div>
+                <div class="form-group">
+                    <label for="usuario-senha-confirm">Confirmar senha:</label>
+                    <input type="password" id="usuario-senha-confirm" name="senhaConfirm" required autocomplete="new-password">
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="btn-cancelar-usuario-modal" class="btn-secondary">Cancelar</button> <button type="submit" id="btn-salvar-usuario" class="btn-primary">Salvar Usuário</button> </div>
+            </form>
+        </div>
+    </div>
+    <div id="modal-entrega-encomenda" class="modal-overlay">
+    <div class="modal-content">
+        <h2 id="modal-entrega-title">Registrar entrega de encomenda</h2>
+        <form id="form-entrega-encomenda">
+            <input type="hidden" id="entrega-encomenda-id" name="entregaEncomendaId">
+
+            <div class="form-group">
+                <label for="entrega-morador-info">Encomenda para:</label>
+                <input type="text" id="entrega-morador-info" name="entregaMoradorInfo" readonly disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="entrega-porteiro">Porteiro que entregou:</label>
+                <input type="text" id="entrega-porteiro" name="entregaPorteiro" required autocomplete="off" placeholder="Digite para buscar o porteiro...">
+                <div id="entrega-porteiro-suggestions" class="suggestions-list"></div>
+            </div>
+
+            <div class="form-group form-row">
+                <div class="form-subgroup">
+                    <label for="entrega-data">Data da entrega:</label>
+                    <input type="date" id="entrega-data" name="entregaData" required>
+                </div>
+                <div class="form-subgroup">
+                    <label for="entrega-hora">Hora da entrega:</label>
+                    <input type="time" id="entrega-hora" name="entregaHora" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="entrega-retirado-por">Entregue para (nome de quem retirou):</label>
+                <input type="text" id="entrega-retirado-por" name="entregaRetiradoPor" placeholder="Nome de quem retirou (se não o morador)">
+            </div>
+
+            <div class="form-group">
+                <label for="entrega-observacoes">Observações da entrega (opcional):</label>
+                <textarea id="entrega-observacoes" name="entregaObservacoes" rows="3"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="btn-cancelar-entrega-modal" class="btn-secondary">Cancelar</button>
+                <button type="submit" id="btn-confirmar-entrega" class="btn-primary">Confirmar Entrega</button>
+            </div>
+        </form>
+    </div>
+</div>
+    <script src="renderer.js"></script>
+</body>
+</html>
+
